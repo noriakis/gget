@@ -828,6 +828,14 @@ def main():
         required=False,
         help="DEPRECATED - json is now the default output format (convert to csv using flag [--csv]).",
     )
+    parser_enrichr.add_argument(
+    	"-k",
+    	"--kegg",
+        type=str,
+        required=False,
+        help=(
+            "Path to the png file the marked KEGG pathway images will be saved in, e.g. path/to/directory/pathway.png"
+        ),)
 
     ## gget archs4 subparser
     archs4_desc = "Find the most correlated genes or the tissue expression atlas of a gene using data from the human and mouse RNA-seq database ARCHS4 (https://maayanlab.cloud/archs4/)."
@@ -1989,6 +1997,7 @@ def main():
             ensembl_bkg=args.ensembl_bkg,
             json=args.csv,
             verbose=args.quiet,
+            kegg=args.kegg
         )
 
         # Check if the function returned something
