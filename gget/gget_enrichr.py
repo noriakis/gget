@@ -3,7 +3,7 @@ import pandas as pd
 import json as json_package
 import numpy as np
 import logging
-import pykegg
+import sys
 
 # Add and format time stamp in logging messages
 logging.basicConfig(
@@ -172,7 +172,8 @@ def enrichr(
     # Check if KEGG database
     if kegg is not None:
     	if not database.startswith("KEGG"):
-    		raise ValueError("Please specify KEGG database")
+    		logging.error("Please specify KEGG database")
+    		return
 
     # If single gene passed as string, convert to list
     if type(genes) == str:
@@ -469,9 +470,14 @@ def enrichr(
                 transparent=True,
             )
     if kegg is not None:
-    	candidate_rank = df[df["rank"]==kegg_rank].iloc[0,:]
-    	kegg_img = pykegg.visualize(candidate_rank["path_name"],
-    		candidate_rank["overlapping_genes"], db=database, output=kegg)
+        try:
+            import pykegg
+        except ImportError:
+            logging.error("Please install `pykegg` for plotting")
+            return
+        candidate_rank = df[df["rank"]==kegg_rank].iloc[0,:]
+        kegg_img = pykegg.visualize(candidate_rank["path_name"],
+            candidate_rank["overlapping_genes"], db=database, output=kegg)
     	
     if json:
         results_dict = json_package.loads(df.to_json(orient="records"))
